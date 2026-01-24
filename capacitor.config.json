@@ -1,5 +1,5 @@
 {
-  "appId": "xyz.enoki.dopamine",
-  "appName": "Dopamine",
+  "appId": "xyz.enoki.jikantoki.player",
+  "appName": "jikantoki-music-player",
   "webDir": "dist"
 }

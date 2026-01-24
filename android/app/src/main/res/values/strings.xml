@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<resources>
+    <string name="app_name">ときえのきミュージックプレイヤー</string>
+    <string name="title_activity_main">ときえのきミュージックプレイヤー</string>
+    <string name="package_name">xyz.enoki.jikantoki.player</string>
+    <string name="custom_url_scheme">xyz.enoki.jikantoki.player</string>
+</resources>
