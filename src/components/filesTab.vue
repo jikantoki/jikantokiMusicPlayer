@@ -93,59 +93,59 @@
         )
 </template>
 
-<script>
+<script lang="ts">
 import playerTabVue from './playerTab.vue'
 export default {
   components: {
-    playerTabVue,
+    playerTabVue
   },
   data() {
     return {
       /** 楽曲選択画面か？ */
-      editScreen: false,
+      editScreen: false
     }
   },
   props: {
     /** 読み込んだファイル達 */
     files: {
-      type: Array,
+      type: Array
     },
     /** 再生中フラグBoolean */
     status: {
-      type: Boolean,
+      type: Boolean
     },
     /** 今再生しているファイル名 */
     currentFilename: {
-      type: String,
+      type: String
     },
     /** 今再生しているファイルの位置 */
     currentFilePos: {
-      type: Object,
+      type: Object
     },
     /** 再生している曲の長さ */
     duration: {
       type: Number,
-      default: 0,
+      default: 0
     },
     /** 現在の再生位置 */
     currentTime: {
       type: Number,
-      default: 0,
+      default: 0
     },
     /** ファイルが全て読み込み済みか？ */
     fileLoaded: {
       type: Boolean,
-      default: true,
+      default: true
     },
     /** ファイルの読み込み割合 */
     parsent: {
       type: Number,
-      default: 0,
-    },
+      default: 0
+    }
   },
   methods: {
     /** 楽曲再生 */
-    play(file, folderIndex, fileIndex) {
+    play(file: any, folderIndex: number, fileIndex: number) {
       this.$emit('play', file, folderIndex, fileIndex)
     },
     /** 楽曲再生 */
@@ -165,16 +165,19 @@ export default {
       this.$emit('nextButton')
     },
     /** move */
-    move(moveValue) {
+    move(moveValue: number) {
       this.$emit('move', moveValue)
     },
     /** 秒（Number）を分:秒（String）に変換 */
-    calcTime(sec) {
+    calcTime(sec: number) {
       const calcedSec = Math.floor(sec % 60)
       const min = Math.floor((sec % 3600) / 60)
-      return `${String(min).padStart(2, 0)}:${String(calcedSec).padStart(2, 0)}`
+      return `${String(min).padStart(2, '0')}:${String(calcedSec).padStart(
+        2,
+        '0'
+      )}`
     },
-    toggleFolder(folderIndex) {
+    toggleFolder(folderIndex: number) {
       this.$emit('toggleFolder', folderIndex)
     },
     reload() {
@@ -183,7 +186,7 @@ export default {
     addFiles() {
       this.$emit('addFiles')
     },
-    getFilename(path) {
+    getFilename(path: string) {
       const splited = path.split('/')
       return splited[splited.length - 1]
     },
@@ -193,7 +196,7 @@ export default {
      * @param {number} folderIndex 何番目のフォルダーを消すか？
      * @param {number} fileIndex 何番目のファイルを消すか？
      */
-    remove(type, folderIndex, fileIndex) {
+    remove(type: string, folderIndex: number, fileIndex: number) {
       this.$emit('remove', type, folderIndex, fileIndex)
     },
     closeEdit() {
@@ -201,8 +204,8 @@ export default {
     },
     loadCancel() {
       this.$emit('loadCancel')
-    },
-  },
+    }
+  }
 }
 </script>
 

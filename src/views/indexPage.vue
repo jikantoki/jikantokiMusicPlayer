@@ -58,7 +58,10 @@
             )
           v-window-item.player-window(value="about")
             aboutTab
-  audio(:src="nowPlaying ? nowPlaying.address : null" ref="player")
+  audio(
+    :src="nowPlaying ? nowPlaying.address : null"
+    ref="player"
+    )
   v-dialog.folderPicker(
     v-model="folderPickerDialog"
     persistent
@@ -71,15 +74,15 @@
     )
 </template>
 
-<script>
+<script lang="ts">
 // eslint-disable-next-line no-unused-vars
 import { Toast } from '@capacitor/toast'
-import filesTab from '/src/components/filesTab.vue'
-import playerTab from '/src/components/playerTab.vue'
-import aboutTab from '@/components/aboutTab.vue'
-import folderPicker from '@/components/folderPicker.vue'
+import filesTab from '../components/filesTab.vue'
+import playerTab from '../components/playerTab.vue'
+import aboutTab from '../components/aboutTab.vue'
+import folderPicker from '../components/folderPicker.vue'
 import { CapacitorMusicControls } from 'capacitor-music-controls-plugin'
-const MP3Tag = require('mp3tag.js')
+import MP3Tag from 'mp3tag.js'
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem'
 import { Capacitor } from '@capacitor/core'
 
@@ -88,7 +91,7 @@ export default {
     filesTab,
     playerTab,
     aboutTab,
-    folderPicker,
+    folderPicker
   },
   data() {
     return {
@@ -110,7 +113,7 @@ export default {
               album: null,
               /** サムネイルURL */
               thumbnail: null,
-              duration: 0,
+              duration: 0
             },
             {
               address: '/assets/jikantoki/02 NULL.mp3',
@@ -118,7 +121,7 @@ export default {
               artist: null,
               album: null,
               thumbnail: null,
-              duration: 0,
+              duration: 0
             },
             {
               address: '/assets/jikantoki/03 Giveme.mp3',
@@ -126,7 +129,7 @@ export default {
               artist: null,
               album: null,
               thumbnail: null,
-              duration: 0,
+              duration: 0
             },
             {
               address: '/assets/jikantoki/04 深夜徘徊VS.mp3',
@@ -134,7 +137,7 @@ export default {
               artist: null,
               album: null,
               thumbnail: null,
-              duration: 0,
+              duration: 0
             },
             {
               address: '/assets/jikantoki/05 ENOKI HARDCORE β.mp3',
@@ -142,7 +145,7 @@ export default {
               artist: null,
               album: null,
               thumbnail: null,
-              duration: 0,
+              duration: 0
             },
             {
               address: '/assets/jikantoki/06 ENOKI GUITARPOP β.mp3',
@@ -150,7 +153,7 @@ export default {
               artist: null,
               album: null,
               thumbnail: null,
-              duration: 0,
+              duration: 0
             },
             {
               address: '/assets/jikantoki/07 ENOKI GAMECENTER β.mp3',
@@ -158,7 +161,7 @@ export default {
               artist: null,
               album: null,
               thumbnail: null,
-              duration: 0,
+              duration: 0
             },
             {
               address: '/assets/jikantoki/08 ENOKI HARDBASS β.mp3',
@@ -166,7 +169,7 @@ export default {
               artist: null,
               album: null,
               thumbnail: null,
-              duration: 0,
+              duration: 0
             },
             {
               address: '/assets/jikantoki/09 ENOKI PROGRESSIVE HOUSE β.mp3',
@@ -174,7 +177,7 @@ export default {
               artist: null,
               album: null,
               thumbnail: null,
-              duration: 0,
+              duration: 0
             },
             {
               address: '/assets/jikantoki/10 ENOKI TECHNOPOP β.mp3',
@@ -182,7 +185,7 @@ export default {
               artist: null,
               album: null,
               thumbnail: null,
-              duration: 0,
+              duration: 0
             },
             {
               address: '/assets/jikantoki/11 人生のタイムカプセル_初音ミク.mp3',
@@ -190,7 +193,7 @@ export default {
               artist: null,
               album: null,
               thumbnail: null,
-              duration: 0,
+              duration: 0
             },
             {
               address: '/assets/jikantoki/20250224-001.mp3',
@@ -198,7 +201,7 @@ export default {
               artist: null,
               album: null,
               thumbnail: null,
-              duration: 0,
+              duration: 0
             },
             {
               address: '/assets/jikantoki/Colors_初音ミク.mp3',
@@ -206,13 +209,21 @@ export default {
               artist: null,
               album: null,
               thumbnail: null,
-              duration: 0,
-            },
-          ],
-        },
+              duration: 0
+            }
+          ] as {
+            address: string
+            title: string | null
+            artist: string | null
+            album: string | null
+            thumbnail: string | null
+            duration: number
+            thumbnailLocal: undefined | string
+          }[]
+        }
       ],
       /** プリインストールの楽曲 */
-      preinstallFiles: [],
+      preinstallFiles: [] as any,
       /** リピートするか？ */
       repeat: false,
       /** ランダム再生するか？ */
@@ -220,7 +231,7 @@ export default {
       /** 再生速度 */
       speed: 1.0,
       /** 再生中の曲の情報（this.files[xxx].files[xxx]の情報が入る） */
-      nowPlaying: null,
+      nowPlaying: null as any,
       /** 現在再生中か？Boolean */
       playStatus: false,
       /** 現在表示中のサムネイルURL */
@@ -232,7 +243,7 @@ export default {
         /** 何番目のフォルダーか */
         folderIndex: 0,
         /** 何番目のファイルか */
-        fileIndex: 0,
+        fileIndex: 0
       },
       /** 曲の長さ */
       musicDuration: 0,
@@ -245,13 +256,13 @@ export default {
       /** フォルダーピッカーが動いているか？ */
       folderPickerDialog: false,
       /** プレイリスト追加時の一時的なバッファ */
-      playlistBuffer: [],
+      playlistBuffer: [] as any,
       /** プレイリスト追加時の読み込み中表示フラグ */
       addPlaylistLoading: false,
       /** ファイルの読み込み完了割合 */
       parsent: 0,
       /** これがTrueなら強制リロードを中止 */
-      loadCancelFlag: false,
+      loadCancelFlag: false
     }
   },
   methods: {
@@ -262,8 +273,14 @@ export default {
      * @param {Number} fileIndex 何番目のファイル？
      * @param {Boolean} standbyFlag Trueなら楽曲セットするが再生しない
      */
-    async play(filename, folderIndex, fileIndex, standbyFlag = false) {
+    async play(
+      filename: any,
+      folderIndex: number | undefined,
+      fileIndex: number | undefined,
+      standbyFlag = false
+    ) {
       console.log(filename, folderIndex, fileIndex, standbyFlag)
+      const player = this.$refs.player as any
       /** 現在再生しているファイルと今から再生するファイルが違う場合はTrue */
       let newfile = true
       //再生するファイルを指定している？
@@ -275,7 +292,7 @@ export default {
         if (folderIndex && fileIndex) {
           this.current = {
             folderIndex: folderIndex,
-            fileIndex: fileIndex,
+            fileIndex: fileIndex
           }
         }
         //指定がないので、とりあえず先頭をスタンバイ
@@ -284,7 +301,7 @@ export default {
         this.nowPlaying = this.files[0].files[0]
         this.current = {
           folderIndex: 0,
-          fileIndex: 0,
+          fileIndex: 0
         }
       }
       let thumbnailURL = 'thumbnail_default.jpg'
@@ -292,9 +309,9 @@ export default {
         thumbnailURL = this.nowPlaying.thumbnailLocal
       }
       if (this.$refs.player) {
-        this.$refs.player.load()
+        player.load()
         await this.eventPromisify(this.$refs.player, 'loadedmetadata')
-        this.musicDuration = this.$refs.player.duration
+        this.musicDuration = player.duration
       }
       if (newfile || standbyFlag) {
         CapacitorMusicControls.create({
@@ -320,7 +337,7 @@ export default {
           nextIcon: 'media_next',
           closeIcon: 'media_close',
           notificationIcon: 'notification',
-          ticker: this.nowPlaying.title,
+          ticker: this.nowPlaying.title
         })
           .then(() => {
             // SUCCESS
@@ -332,28 +349,27 @@ export default {
       }
       // audio要素が再生中でなければ、playingフラグを切る必要がある
       if (standbyFlag) {
-        if (this.$refs.player && this.$refs.player.paused) {
+        if (player && player.paused) {
           CapacitorMusicControls.updateIsPlaying({
-            isPlaying: false, // affects Android only
+            isPlaying: false // affects Android only
           })
           CapacitorMusicControls.updateElapsed({
             elapsed: this.currentTime * 1000,
-            isPlaying: false,
+            isPlaying: false
           })
         }
       } else {
         CapacitorMusicControls.updateIsPlaying({
-          isPlaying: true, // affects Android only
+          isPlaying: true // affects Android only
         })
         CapacitorMusicControls.updateElapsed({
           elapsed: this.currentTime * 1000,
-          isPlaying: true,
+          isPlaying: true
         })
-        const th = this
-        setTimeout(function () {
-          th.$refs.player.play()
-          th.$refs.player.playbackRate = th.speed
-          th.playStatus = true
+        setTimeout(() => {
+          player.play()
+          player.playbackRate = this.speed
+          this.playStatus = true
         }, 1)
       }
       //現在の状況をストレージに保存
@@ -361,20 +377,22 @@ export default {
     },
     /** 一時停止 */
     pause() {
-      this.$refs.player.pause()
+      const player = this.$refs.player as any
+      player.pause()
       this.playStatus = false
       CapacitorMusicControls.updateIsPlaying({
-        isPlaying: false, // affects Android only
+        isPlaying: false // affects Android only
       })
       CapacitorMusicControls.updateElapsed({
         elapsed: this.currentTime * 1000,
-        isPlaying: false,
+        isPlaying: false
       })
       //現在の状況をストレージに保存
       this.saveData()
     },
     /** 戻る */
     prev() {
+      const player = this.$refs.player as any
       //ファイルがない場合何もしない
       if (!this.files[0]) {
         return
@@ -389,7 +407,7 @@ export default {
           ],
           this.current.folderIndex,
           this.current.fileIndex - 1,
-          this.$refs.player && this.$refs.player.paused,
+          player && player.paused
         )
         //ない場合は、前フォルダーの最後トラックへの移動を試みる
       } else if (
@@ -402,7 +420,7 @@ export default {
           ],
           this.current.folderIndex - 1,
           this.files[this.current.folderIndex - 1].files.length - 1,
-          this.$refs.player.paused,
+          player.paused
         )
         //それもなければ、最後尾のフォルダーの最後尾への移動を試みる
       } else {
@@ -412,7 +430,7 @@ export default {
           ],
           this.files.length - 1,
           this.files[this.files.length - 1].files.length - 1,
-          this.$refs.player.paused,
+          player.paused
         )
       }
       //現在の状況をストレージに保存
@@ -423,6 +441,7 @@ export default {
      * @param {Boolean} [forcePlay = false] Trueにすると強制的に再生開始
      */
     next(forcePlay = false) {
+      const player = this.$refs.player as any
       //ファイルがない場合何もしない
       if (!this.files[0]) {
         return
@@ -433,14 +452,14 @@ export default {
           this.files[this.current.folderIndex].files[this.current.fileIndex],
           this.current.folderIndex,
           this.current.fileIndex,
-          this.$refs.player && this.$refs.player.paused && !forcePlay,
+          player && player.paused && !forcePlay
         )
-        this.$refs.player.currentTime = 0
+        player.currentTime = 0
         return
       }
       //ランダムフラグが立っていたら、ランダムな曲を流す
       if (this.random) {
-        const getRandomInt = (max) => {
+        const getRandomInt = (max: number) => {
           return Math.floor(Math.random() * max)
         }
         let folderIndex
@@ -460,7 +479,7 @@ export default {
           this.files[folderIndex].files[fileIndex],
           folderIndex,
           fileIndex,
-          this.$refs.player.paused && !forcePlay,
+          player.paused && !forcePlay
         )
         return
       }
@@ -474,7 +493,7 @@ export default {
           ],
           this.current.folderIndex,
           this.current.fileIndex + 1,
-          this.$refs.player.paused && !forcePlay,
+          player.paused && !forcePlay
         )
         //ない場合は、次フォルダーの最初のトラックへの移動を試みる
       } else if (
@@ -485,39 +504,36 @@ export default {
           this.files[this.current.folderIndex + 1].files[0],
           this.current.folderIndex + 1,
           0,
-          this.$refs.player.paused && !forcePlay,
+          player.paused && !forcePlay
         )
         //それもなければ、最初のフォルダーの最初への移動を試みる
       } else {
-        this.play(
-          this.files[0].files[0],
-          0,
-          0,
-          this.$refs.player.paused && !forcePlay,
-        )
+        this.play(this.files[0].files[0], 0, 0, player.paused && !forcePlay)
       }
       //現在の状況をストレージに保存
       this.saveData()
     },
     /** 再生速度の変更 */
-    speedChange(newSpeed) {
+    speedChange(newSpeed: number) {
+      const player = this.$refs.player as any
       if (newSpeed) {
-        this.$refs.player.playbackRate = newSpeed
+        player.playbackRate = newSpeed
         this.speed = newSpeed
       }
       //現在の状況をストレージに保存
       this.saveData()
     },
     /** 再生位置の移動（moveValueパーセントまで曲を進める） */
-    move(moveValue) {
+    move(moveValue: number) {
+      const player = this.$refs.player as any
       /** 現在再生中の曲の長さ */
-      const duration = this.$refs.player.duration
-      this.$refs.player.currentTime = (duration * moveValue) / 100
+      const duration = player.duration
+      player.currentTime = (duration * moveValue) / 100
       //現在の状況をストレージに保存
       this.saveData()
     },
     /** blobをbase64に変換 */
-    blobToBase64(blob) {
+    blobToBase64(blob: Blob) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader()
         reader.onloadend = () => resolve(reader.result)
@@ -531,13 +547,13 @@ export default {
      * @param {*} data 保存するデータ
      * @param {boolean} [saveAsUTF8=true] 画像とか保存するときはfalse
      */
-    async writeFile(path, data, saveAsUTF8 = true) {
+    async writeFile(path: string, data: any, saveAsUTF8 = true) {
       await Filesystem.writeFile({
         path: `${this.dataDirectory}${path}`,
         data: data,
         directory: Directory.Data,
         encoding: saveAsUTF8 ? Encoding.UTF8 : undefined,
-        recursive: true,
+        recursive: true
       })
     },
     /**
@@ -545,26 +561,26 @@ export default {
      * @param {String} path ファイルのパス
      * @param {boolean} [loadAsUTF8=true] UTF8で読み込むか？
      */
-    async readFile(path, loadAsUTF8 = true) {
+    async readFile(path: string, loadAsUTF8 = true) {
       const contents = await Filesystem.readFile({
         path: `${this.dataDirectory}${path}`,
         directory: Directory.Data,
-        encoding: loadAsUTF8 ? Encoding.UTF8 : undefined,
+        encoding: loadAsUTF8 ? Encoding.UTF8 : undefined
       })
       return contents
     },
     /** ストレージからファイル削除 */
-    async deleteFile(path) {
+    async deleteFile(path: string) {
       await Filesystem.deleteFile({
         path: `${this.dataDirectory}${path}`,
-        directory: Directory.Data,
+        directory: Directory.Data
       })
     },
     /** ストレージ上のファイルのフルパスを取得（file://型式） */
-    async getUri(path) {
+    async getUri(path: string) {
       const contents = await Filesystem.getUri({
         path: `${this.dataDirectory}${path}`,
-        directory: Directory.Data,
+        directory: Directory.Data
       })
       return contents.uri
     },
@@ -572,12 +588,12 @@ export default {
     async saveData(forceSave = false) {
       if (!this.fileLoaded && !forceSave) {
         console.log(
-          'アプリがファイル読み込み中のためデータ保存をスキップしました',
+          'アプリがファイル読み込み中のためデータ保存をスキップしました'
         )
         return
       }
       const files = this.files.map((folder) => {
-        const file = folder.files.map((file) => {
+        const file = folder.files.map((file: any) => {
           return {
             address: file.address,
             title: file.title,
@@ -585,13 +601,13 @@ export default {
             album: file.album,
             duration: file.duration,
             thumbnail: file.thumbnail,
-            thumbnailLocal: file.thumbnailLocal,
+            thumbnailLocal: file.thumbnailLocal
           }
         })
         return {
           title: folder.title,
           files: file,
-          onDisplay: folder.onDisplay,
+          onDisplay: folder.onDisplay
         }
       })
       let nowPlaying
@@ -603,7 +619,7 @@ export default {
           album: this.nowPlaying.album,
           duration: this.nowPlaying.duration,
           thumbnail: this.nowPlaying.thumbnail,
-          thumbnailLocal: this.nowPlaying.thumbnailLocal,
+          thumbnailLocal: this.nowPlaying.thumbnailLocal
         }
       }
       const settings = {
@@ -615,7 +631,7 @@ export default {
         current: this.current,
         tab: this.tab,
         musicDuration: this.musicDuration,
-        currentTime: this.currentTime,
+        currentTime: this.currentTime
       }
       try {
         await this.writeFile('settings.json', JSON.stringify(settings))
@@ -624,7 +640,7 @@ export default {
       }
     },
     /** フォルダーの表示/非表示切り替え */
-    toggleFolder(folderIndex) {
+    toggleFolder(folderIndex: number) {
       this.files[folderIndex].onDisplay = !this.files[folderIndex].onDisplay
       this.saveData()
     },
@@ -707,7 +723,7 @@ export default {
                 //サムネイルはUnit8Array型式になっているので、Blobに変換する
                 const unit8array = new Uint8Array(mp3tag.tags.v2.APIC[0].data)
                 const blob = new Blob([unit8array], {
-                  type: fileType,
+                  type: fileType
                 })
                 const base64 = await this.blobToBase64(blob)
 
@@ -716,7 +732,7 @@ export default {
                 //const addressWithoutDomain = file.address.replace(domain, '')
                 const addressWithoutDomain = file.address.replace(
                   `${domain}/_capacitor_file_/`,
-                  '',
+                  ''
                 )
                 const path = `${addressWithoutDomain}.jpg`
                 this.writeFile(path, base64, false)
@@ -736,7 +752,7 @@ export default {
             const parsent =
               folderPersent +
               (fileIndex / fileLengths[folderIndex]) * 100 * (1 / folderLength)
-            this.parsent = parsent.toFixed(2)
+            this.parsent = Number(parsent.toFixed(2))
             fileIndex += 1
           }
         }
@@ -766,12 +782,12 @@ export default {
      * @param {EventTarget} eventTarget
      * @param {string} eventName
      */
-    eventPromisify(eventTarget, eventName) {
+    eventPromisify(eventTarget: any, eventName: string) {
       return new Promise((resolve, reject) => {
         eventTarget.addEventListener('error', () => {
           reject(new Error('error'))
         })
-        eventTarget.addEventListener(eventName, (...args) => resolve(...args))
+        eventTarget.addEventListener(eventName, () => resolve(undefined))
       })
     },
     /** ファイルの再読み込み */
@@ -789,12 +805,16 @@ export default {
     async searchDir(path = '') {
       const dir = await Filesystem.readdir({
         directory: Directory.ExternalStorage,
-        path: path,
+        path: path
       })
       return dir.files
     },
     /** 指定されたディレクトリ以下の全ファイルをプレイリストに追加 */
-    async addPlaylist(path, loopNow = false, addPreinstall = false) {
+    async addPlaylist(
+      path: string | undefined,
+      loopNow = false,
+      addPreinstall = false
+    ) {
       if (!loopNow) {
         this.playlistBuffer = []
         this.addPlaylistLoading = true
@@ -863,6 +883,12 @@ export default {
             if (folder.title == directoryName) {
               this.files[folderIndex].files.push({
                 address: address,
+                title: null,
+                artist: null,
+                thumbnail: null,
+                album: null,
+                duration: 0,
+                thumbnailLocal: undefined
               })
               continueFlag = true
               continue
@@ -878,8 +904,14 @@ export default {
             files: [
               {
                 address: address,
-              },
-            ],
+                title: null,
+                artist: null,
+                thumbnail: null,
+                album: null,
+                duration: 0,
+                thumbnailLocal: undefined
+              }
+            ]
           })
         }
         this.saveData()
@@ -896,7 +928,7 @@ export default {
      * @param {number} folderIndex 何番目のフォルダーを消すか？
      * @param {number} fileIndex 何番目のファイルを消すか？
      */
-    remove(type, folderIndex, fileIndex) {
+    remove(type: string, folderIndex: number, fileIndex: number) {
       if (type == 'all') {
         this.files = []
       }
@@ -910,18 +942,19 @@ export default {
         }
       }
       if (!this.files[0]) {
-        this.$refs.filesTab.closeEdit()
+        const filesTab = this.$refs.filesTab as any
+        filesTab.closeEdit()
       }
       this.saveData()
     },
     /** プリインストールの楽曲を追加する */
     addPreinstall() {
-      this.addPlaylist(null, false, true)
+      this.addPlaylist(undefined, false, true)
     },
     /** async/awaitでtimeミリ秒待つ */
-    sleep(time) {
+    sleep(time: number) {
       new Promise((resolve) => setTimeout(resolve, time))
-    },
+    }
   },
   watch: {
     random: function () {
@@ -932,14 +965,14 @@ export default {
     },
     tab: function () {
       this.saveData()
-    },
+    }
   },
   async mounted() {
     //プリインストール楽曲リストを初期化
     this.preinstallFiles = this.files
     //設定を復元
     try {
-      const jsonSettings = await this.readFile('settings.json')
+      const jsonSettings = (await this.readFile('settings.json')) as any
       const settings = JSON.parse(jsonSettings.data)
       this.tab = settings.tab
       this.current = settings.current
@@ -949,12 +982,13 @@ export default {
       this.repeat = settings.repeat
       this.speed = settings.speed
       this.musicDuration = settings.musicDuration
-      this.$refs.player.currentTime = settings.currentTime
+      const player = this.$refs.player as any
+      player.currentTime = settings.currentTime
 
       if (!this.current) {
         this.current = {
           folderIndex: 0,
-          fileIndex: 0,
+          fileIndex: 0
         }
       }
       this.loadSetting = true
@@ -967,7 +1001,8 @@ export default {
 
     //終わったら次の曲の再生
     if (this.$refs.player) {
-      this.$refs.player.addEventListener('ended', () => this.next(true))
+      const player = this.$refs.player as any
+      player.addEventListener('ended', () => this.next(true))
     }
 
     //通知欄の再生ボタンを準備
@@ -989,13 +1024,14 @@ export default {
       nextIcon: 'media_next',
       closeIcon: 'media_close',
       notificationIcon: 'notification',
-      ticker: 'Dopamine',
+      ticker: 'Dopamine'
     })
 
     //現在の再生位置をリアルタイムで伝える
     setInterval(() => {
-      if (this.$refs.player) {
-        this.currentTime = this.$refs.player.currentTime
+      const player = this.$refs.player as any
+      if (player) {
+        this.currentTime = player.currentTime
       } else {
         this.currentTime = 0
       }
@@ -1008,7 +1044,7 @@ export default {
 
     //端末側の楽曲コントロールの命令用
     const th = this
-    document.addEventListener('controlsNotification', (event) => {
+    document.addEventListener('controlsNotification', (event: any) => {
       let position = 0
       let parsent = 0
       switch (event.message) {
@@ -1016,7 +1052,7 @@ export default {
           th.prev()
           break
         case 'music-controls-play':
-          th.play()
+          th.play(null, undefined, undefined)
           break
         case 'music-controls-pause':
           th.pause()
@@ -1035,10 +1071,11 @@ export default {
     })
 
     setInterval(() => {
-      if (this.$refs.player && !this.$refs.player.paused) {
+      const player = this.$refs.player as any
+      if (player && !player.paused) {
         CapacitorMusicControls.updateElapsed({
           elapsed: this.currentTime * 1000,
-          isPlaying: true,
+          isPlaying: true
         })
       }
     }, 1000)
@@ -1049,7 +1086,7 @@ export default {
     }
     //スタンバイ
     this.play(this.nowPlaying, undefined, undefined, true)
-  },
+  }
 }
 </script>
 

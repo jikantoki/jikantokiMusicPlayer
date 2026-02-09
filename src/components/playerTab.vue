@@ -111,64 +111,64 @@
         v-btn(@click="speedDialog = false") 決定
 </template>
 
-<script>
+<script lang="ts">
 import { Toast } from '@capacitor/toast'
 
 export default {
   components: {},
   props: {
     filename: {
-      type: String,
+      type: String
     },
     /** 再生中フラグBoolean */
     status: {
-      type: Boolean,
+      type: Boolean
     },
     /** 小さい再生バーの表示 */
     mini: {
       type: Boolean,
-      default: false,
+      default: false
     },
     /** 再生している曲の長さ */
     duration: {
       type: Number,
-      default: 0,
+      default: 0
     },
     /** 現在の再生位置 */
     currentTime: {
       type: Number,
-      default: 0,
+      default: 0
     },
     /** 今再生しているファイルのフォルダー名 */
     currentFolder: {
       type: String,
-      default: '',
+      default: ''
     },
     /** 今再生しているのはフォルダー内で何番目の曲か */
     fileIndex: {
       type: Number,
-      default: 0,
+      default: 0
     },
     /** 再生速度 */
     speed: {
       type: Number,
-      default: 1,
+      default: 1
     },
     /** リピートするか？ */
     repeat: {
       type: Boolean,
-      default: false,
+      default: false
     },
     /** ランダム再生するか？ */
     random: {
       type: Boolean,
-      default: false,
+      default: false
     },
     /** ファイルが存在しないフラグ */
     noFile: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   data() {
     return {
@@ -177,12 +177,12 @@ export default {
       /** スピード調整ダイアログ表示用 */
       speedDialog: false,
       /** 内部入力用の再生速度 */
-      speedInput: 1,
+      speedInput: 1
     }
   },
   methods: {
     /** 良い感じのタイトルを付ける */
-    calcTitle(filename) {
+    calcTitle(filename: any) {
       if (filename) {
         if (filename.title && filename.title != '') {
           return filename.title
@@ -211,22 +211,22 @@ export default {
       this.$emit('next')
     },
     /** ランダム再生をオン/オフ */
-    switchRandom(bool) {
+    switchRandom(bool: boolean) {
       this.$emit('random', bool)
     },
     /** リピート再生をオン/オフ */
-    switchRepeat(bool) {
+    switchRepeat(bool: boolean) {
       this.$emit('repeat', bool)
     },
     /** 再生位置の変更 */
-    seekbar(event) {
+    seekbar(event: any) {
       if (!this.duration) {
         //これをしないと1秒に数十回リクエストが来る
         if (!this.toastOnce) {
           this.toastOnce = true
           console.log('0秒の曲でシークバーの移動はできません')
           Toast.show({ text: 'エラー: リトライしてください' })
-          setTimeout((this.toastOnce = false), 5000)
+          setTimeout(() => (this.toastOnce = false), 5000)
         }
         return
       }
@@ -244,11 +244,14 @@ export default {
       this.$emit('move', (currentX / clientWidth) * 100)
     },
     /** 秒（Number）を分:秒（String）に変換 */
-    calcTime(sec) {
+    calcTime(sec: number) {
       const calcedSec = Math.floor(sec % 60)
       const min = Math.floor((sec % 3600) / 60)
-      return `${String(min).padStart(2, 0)}:${String(calcedSec).padStart(2, 0)}`
-    },
+      return `${String(min).padStart(2, '0')}:${String(calcedSec).padStart(
+        2,
+        '0'
+      )}`
+    }
   },
   watch: {
     speed: function (newSpeed) {
@@ -258,8 +261,8 @@ export default {
     speedInput: function (newSpeed) {
       //再生速度を入力したら、即時反映させる
       this.$emit('speedChange', newSpeed)
-    },
-  },
+    }
+  }
 }
 </script>
 

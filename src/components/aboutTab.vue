@@ -31,39 +31,36 @@
   p.my-4 &copy;エノキ電気
 </template>
 
-<script>
-import packageJson from '/package.json'
-
+<script lang="ts">
 export default {
   data() {
     return {
-      packageJson,
       links: [
         {
           icon: 'mdi-github',
-          url: 'https://github.com/jikantoki/dopamine',
+          url: 'https://github.com/jikantoki/dopamine'
         },
         {
           icon: 'mdi-earth',
-          url: 'https://dopamine.enoki.xyz',
-        },
+          url: 'https://dopamine.enoki.xyz'
+        }
       ],
       myLinks: [
         {
           icon: 'mdi-twitter',
-          url: 'https://twitter.com/jikantoki',
+          url: 'https://twitter.com/jikantoki'
         },
         {
           icon: 'mdi-youtube',
-          url: 'https://youtube.com/@jikantoki',
+          url: 'https://youtube.com/@jikantoki'
         },
         {
           icon: 'mdi-earth',
-          url: 'https://enoki.xyz',
-        },
-      ],
+          url: 'https://enoki.xyz'
+        }
+      ]
     }
-  },
+  }
 }
 </script>
 

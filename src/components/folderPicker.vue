@@ -102,7 +102,7 @@
       ) キャンセル
 </template>
 
-<script>
+<script lang="ts">
 import { Filesystem, Directory } from '@capacitor/filesystem'
 import { AndroidSettings, NativeSettings } from 'capacitor-native-settings'
 
@@ -110,24 +110,24 @@ export default {
   data() {
     return {
       /** 表示するフォルダー */
-      viewFolders: [],
+      viewFolders: [] as any[],
       /** 現在のディレクトリ */
       currentDirectory: '',
       /** 権限許可を表示するか？ */
       viewPermissionSettings: true,
       allowPermissionPhotos: [
         '/assets/allow-permission/step1.jpg',
-        '/assets/allow-permission/step2.jpg',
+        '/assets/allow-permission/step2.jpg'
       ],
-      currentAllowPermissionPhotos: 0,
+      currentAllowPermissionPhotos: 0
     }
   },
   props: {
     /** 読み込み中表示フラグ */
     loading: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   methods: {
     /**
@@ -137,7 +137,7 @@ export default {
     async searchDir(path = '') {
       const dir = await Filesystem.readdir({
         directory: Directory.ExternalStorage,
-        path: path,
+        path: path
       })
       return dir.files
     },
@@ -146,7 +146,7 @@ export default {
      * @param {string} [path=''] このディレクトリ以下を探す
      * @param {boolean} [backFlag=false] Trueなら一つ戻る
      */
-    async changeDir(path, backFlag = false) {
+    async changeDir(path: string, backFlag = false) {
       if (backFlag) {
         const current = this.currentDirectory.split('/')
         const length = current.length
@@ -170,7 +170,7 @@ export default {
     /** Androidの設定画面を開く */
     openSettings() {
       NativeSettings.openAndroid({
-        option: AndroidSettings.ApplicationDetails,
+        option: AndroidSettings.ApplicationDetails
       })
       this.viewPermissionSettings = false
     },
@@ -178,12 +178,12 @@ export default {
     close() {
       this.$emit('close')
     },
-    useDirectory(currentDirectory) {
+    useDirectory(currentDirectory: string) {
       this.$emit('addPlaylist', currentDirectory)
     },
     addPreinstall() {
       this.$emit('addPreinstall')
-    },
+    }
   },
   async mounted() {
     setInterval(() => {
@@ -194,11 +194,8 @@ export default {
       }
     }, 1000)
     this.viewFolders = await this.searchDir('')
-  },
+  }
 }
 </script>
 
-<style lang="scss" scoped>
-.folder-picker-main {
-}
-</style>
+<style lang="scss" scoped></style>
