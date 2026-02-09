@@ -51,6 +51,7 @@
       @pause="pauseButton"
       @next="nextButton"
       @move="move"
+      @moveToPlayer="moveToPlayer"
     )
     .command-space
       .loading(v-show="!fileLoaded")
@@ -167,6 +168,9 @@ export default {
     /** move */
     move(moveValue: number) {
       this.$emit('move', moveValue)
+    },
+    moveToPlayer() {
+      this.$emit('moveToPlayer')
     },
     /** 秒（Number）を分:秒（String）に変換 */
     calcTime(sec: number) {

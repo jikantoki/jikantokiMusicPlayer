@@ -13,20 +13,20 @@ import Vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 export default defineConfig({
   plugins: [
     VueRouter({
-      dts: 'src/typed-router.d.ts',
+      dts: 'src/typed-router.d.ts'
     }),
     Vue({
-      template: { transformAssetUrls },
+      template: { transformAssetUrls }
     }),
     // https://github.com/vuetifyjs/vuetify-loader/tree/master/packages/vite-plugin#readme
     Vuetify({
       autoImport: true,
       styles: {
-        configFile: 'src/styles/settings.scss',
-      },
+        configFile: 'src/styles/settings.scss'
+      }
     }),
     Components({
-      dts: 'src/components.d.ts',
+      dts: 'src/components.d.ts'
     }),
     Fonts({
       fontsource: {
@@ -34,11 +34,11 @@ export default defineConfig({
           {
             name: 'Roboto',
             weights: [100, 300, 400, 500, 700, 900],
-            styles: ['normal', 'italic'],
-          },
-        ],
-      },
-    }),
+            styles: ['normal', 'italic']
+          }
+        ]
+      }
+    })
   ],
   optimizeDeps: {
     exclude: [
@@ -46,18 +46,18 @@ export default defineConfig({
       'vue-router',
       'unplugin-vue-router/runtime',
       'unplugin-vue-router/data-loaders',
-      'unplugin-vue-router/data-loaders/basic',
-    ],
+      'unplugin-vue-router/data-loaders/basic'
+    ]
   },
   define: { 'process.env': {} },
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('src', import.meta.url)),
+      '@': fileURLToPath(new URL('src', import.meta.url))
     },
-    extensions: ['.js', '.json', '.jsx', '.mjs', '.ts', '.tsx', '.vue'],
+    extensions: ['.js', '.json', '.jsx', '.mjs', '.ts', '.tsx', '.vue']
   },
   server: {
     cors: true,
-    port: 3000,
-  },
+    port: 3030
+  }
 })

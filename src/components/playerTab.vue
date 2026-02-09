@@ -19,12 +19,17 @@
               :model-value="(currentTime / duration) * 100"
               height=10
               ref="notMiniProgress"
+              style="cursor: pointer;"
             )
           .time
             p {{ calcTime(currentTime) }}
             p {{ calcTime(duration) }}
       .cover-img(v-if="mini")
-        img(:src='filename && filename.thumbnail ? filename.thumbnail : "/thumbnail_default.jpg"')
+        img(
+          :src='filename && filename.thumbnail ? filename.thumbnail : "/thumbnail_default.jpg"'
+          @click="moveToPlayer()"
+          style="cursor: pointer;"
+          )
       .music-info(v-if="mini")
           p.title {{ calcTitle(filename) }}
           p.artist {{ filename && filename.artist ? filename.artist : '　' }}
@@ -96,6 +101,7 @@
         @touchend.stop
         @touchmove.stop="seekbar"
         ref="miniProgress"
+        style="cursor: pointer;"
       )
   v-dialog(v-model="speedDialog")
     v-card(title="再生速度")
@@ -209,6 +215,9 @@ export default {
     /** 進む */
     next() {
       this.$emit('next')
+    },
+    moveToPlayer() {
+      this.$emit('moveToPlayer')
     },
     /** ランダム再生をオン/オフ */
     switchRandom(bool: boolean) {

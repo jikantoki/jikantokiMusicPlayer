@@ -55,6 +55,7 @@
               @addFiles="folderPicker"
               @remove="remove"
               @loadCancel="loadCancelFlag = true"
+              @moveToPlayer="tab = 'player'"
             )
           v-window-item.player-window(value="about")
             aboutTab
@@ -72,6 +73,9 @@
       @addPlaylist="addPlaylist"
       @addPreinstall="addPreinstall"
     )
+  v-btn(
+    @click="reload()"
+  ) 再読み込み
 </template>
 
 <script lang="ts">
@@ -237,7 +241,7 @@ export default {
       /** 現在表示中のサムネイルURL */
       currentThumbnail: null,
       /** 設定用ファイル保存パス */
-      dataDirectory: 'dopamine-data/',
+      dataDirectory: 'dopamine-data',
       /** 現在再生しているファイル位置 */
       current: {
         /** 何番目のフォルダーか */
@@ -279,17 +283,17 @@ export default {
       fileIndex: number | undefined,
       standbyFlag = false
     ) {
-      console.log(filename, folderIndex, fileIndex, standbyFlag)
       const player = this.$refs.player as any
       /** 現在再生しているファイルと今から再生するファイルが違う場合はTrue */
-      let newfile = true
+      let newfile = false
       //再生するファイルを指定している？
       if (filename) {
         //現在再生しているファイルと、指定されているファイルが違うか？
-        if (this.nowPlaying && filename.address != this.nowPlaying.address)
+        if (this.nowPlaying && filename.address != this.nowPlaying.address) {
           newfile = true
+        }
         this.nowPlaying = filename
-        if (folderIndex && fileIndex) {
+        if (folderIndex !== undefined && fileIndex !== undefined) {
           this.current = {
             folderIndex: folderIndex,
             fileIndex: fileIndex
@@ -308,7 +312,7 @@ export default {
       if (this.nowPlaying.thumbnailLocal) {
         thumbnailURL = this.nowPlaying.thumbnailLocal
       }
-      if (this.$refs.player) {
+      if (player && newfile) {
         player.load()
         await this.eventPromisify(this.$refs.player, 'loadedmetadata')
         this.musicDuration = player.duration
@@ -738,8 +742,10 @@ export default {
                 this.writeFile(path, base64, false)
                 const uri = await this.getUri(path)
                 const url = Capacitor.convertFileSrc(uri)
-                this.files[folderIndex].files[fileIndex].thumbnailLocal = uri
-                this.files[folderIndex].files[fileIndex].thumbnail = url
+                this.files[folderIndex].files[
+                  fileIndex
+                ].thumbnailLocal = `${url}`
+                this.files[folderIndex].files[fileIndex].thumbnail = `${url}`
               } else {
                 this.files[folderIndex].files[fileIndex].thumbnailLocal =
                   'thumbnail_default.jpg'
@@ -996,8 +1002,9 @@ export default {
       console.log(e)
     }
 
-    //タグ検索
-    //this.tagSearch()
+    // タグ検索
+    this.tagSearch()
+    //this.reload()
 
     //終わったら次の曲の再生
     if (this.$refs.player) {
