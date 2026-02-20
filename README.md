@@ -2,21 +2,21 @@
 
 ときえのきの曲が聞き放題！
 
-## Dopamine
-
-[公式ホームページはここです！](https://dopamine.enoki.xyz)
-
-<a href="https://dopamine.enoki.xyz" target="_blank">
+<a href="https://enoki.xyz" target="_blank">
   <img width="40%" src="./public/logo.png">
 </a>
 
 ## 何ができる？
 
-Android ミュージックプレイヤー
+Android 向けミュージックプレイヤーアプリ
 
 ## 特徴
 
-私[ときえのき](https://enoki.xyz)が自作した、ココだけの限定楽曲が聞けます！
+- 私[ときえのき](https://enoki.xyz)が自作した楽曲をオフラインで再生できます
+- フォルダ単位で楽曲を管理・再生できます
+- シャッフル再生・リピート再生・再生速度変更に対応
+- ID3タグ（タイトル・アーティスト・アルバム・サムネイル）に対応
+- ダークテーマ対応
 
 ## スクリーンショット
 
@@ -24,89 +24,116 @@ Android ミュージックプレイヤー
 
 ## Download
 
-[ここをクリックしてダウンロード](https://raw.githubusercontent.com/jikantoki/dopamine/refs/heads/master/dopamine.apk)
+[ここをクリックしてダウンロード](https://raw.githubusercontent.com/jikantoki/jikantokiMusicPlayer/refs/heads/master/release/app-release.apk)
 
-## Vue Android App Template
+## 技術スタック
 
-Vue.js で Android ネイティブアプリを作るテンプレート
+Vue.js + Capacitor で Android ネイティブアプリを構築
 
 ## 仕組み
 
-Capacitor ってやつを使用
+[Capacitor](https://capacitorjs.com/) を使用して Vue.js アプリを Android ネイティブアプリとしてパッケージング
 
-## Included
+## 使用技術
 
-- Vue
-- Vuetify
-- Vue-router
-- Pug
+- Vue 3 + TypeScript
+- Vuetify 3
+- Vue Router 5
+- Pug（テンプレートエンジン）
 - SCSS/SASS
-- Capacitor
-- Capacitor の PWA/Toast 機能
-- ライブリロードをサポート
-- 試しに作ってみた APK ファイル
+- Vite（ビルドツール）
+- Capacitor 8
+- Capacitor Filesystem / Toast / Music Controls
+- mp3tag.js（ID3タグ読み込み）
 
 ## 対応 OS
 
 Android
 
+## ファイル構成
+
+```text
+/
+├── android/                      # Android プロジェクト（Capacitor生成）
+├── assets/                       # アプリアイコン素材
+├── capacitor.config.json         # Capacitor 本番設定
+├── capacitor.config-DEBUG.json   # Capacitor デバッグ用設定（ライブリロード）
+├── public/                       # 静的ファイル
+│   ├── assets/
+│   │   └── screenshots/          # スクリーンショット画像
+│   ├── manifest.json
+│   ├── serviceWorker.js
+│   └── thumbnail_default.jpg     # デフォルトサムネイル
+├── release/                      # リリース APK
+├── src/                          # ソースコード
+│   ├── App.vue                   # アプリルート
+│   ├── components/
+│   │   ├── aboutTab.vue          # About 画面
+│   │   ├── filesTab.vue          # ファイル一覧画面
+│   │   ├── folderPicker.vue      # フォルダ選択
+│   │   └── playerTab.vue         # プレイヤー画面
+│   ├── main.ts
+│   ├── plugins/                  # Vuetify・フォント初期化
+│   ├── router.ts
+│   ├── styles/
+│   │   └── settings.scss         # Vuetify グローバル設定
+│   └── views/
+│       └── indexPage.vue         # メインページ（タブ管理）
+├── index.html
+├── package.json
+└── vite.config.mts               # Vite 設定
+```
+
 ## Project setup
 
 ```shell
-yarn install
-npm install pug#何故か別で書かないと動かない
+npm install
 ```
 
 ### AndroidManifest.xml に以下の記述があることを確認する
 
-場所: /android/app/src/main/AndroidManifest.xml
+場所: `/android/app/src/main/AndroidManifest.xml`
 
 ```xml
 <manifest>
-    <uses-permission
+  <uses-permission
     android:name="android.permission.READ_EXTERNAL_STORAGE"
     android:maxSdkVersion="32"
   />
-    <uses-permission
+  <uses-permission
     android:name="android.permission.WRITE_EXTERNAL_STORAGE"
     android:maxSdkVersion="32"
   />
-    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+  <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
 </manifest>
 ```
 
 ### ブラウザ上での動作確認
 
 ```shell
-yarn serve
+npm run dev
 ```
 
-この状態で [DEBUG.apk](./DEBUG.apk) を使用すると、192.168.11.108:8080 がホストの場合に限ってホットリロードしながらアプリ使える
+開発サーバーが `http://localhost:3030` で起動します。
 
-### APK ファイルにソースを反映
+ライブリロードしながら実機確認する場合は `capacitor.config-DEBUG.json` の `server.url` をこの PC のローカル IP:3030 に変更してから DEBUG 用 APK をビルドしてください。
+
+### ソースを dist に出力
 
 ```shell
-yarn build
+npm run build
 ```
 
 ### Android 用にコンパイル
 
 ```shell
-# /capacitor.config.jsonのserver→url欄にこのPCのローカルIP:Portを入力
-# それか、ライブリロードしない場合（apkに書き出すとか）はserverの記述を削除する
-npx cap init #初期設定
-npx cap add android #初回のみ必要
-npx cap sync #データ同期
-npx cap copy #必要な理由は知らん
-npx cap open android #Android Studioが起動、ライブリロード対応
+npx cap add android   # 初回のみ必要
+npx cap sync          # ビルド結果を Android プロジェクトに同期
+npx cap open android  # Android Studio を起動してビルド・実行
 ```
 
-### Lints and fixes files
+### Lint
 
 ```shell
-yarn lint
+npm run lint
 ```
-
-### Customize configuration
-
-See [Configuration Reference](https://cli.vuejs.org/config/).
